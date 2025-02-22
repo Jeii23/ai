@@ -15,31 +15,35 @@ describe('Tools with OpenAI validation', () => {
   });
 
   it('should validate and execute getMasterNodeFromMnemonic via OpenAI', async () => {
-    const tools = [{
-      type: "function",
-      function: getMasterNodeFromMnemonicSchema
-    }];
+    const tools = [
+      {
+        type: 'function',
+        function: getMasterNodeFromMnemonicSchema
+      }
+    ];
 
     const response = await openai.chat.completions.create({
       model: 'gpt-4',
       messages: [
-        { 
-          role: 'system', 
-          content: 'You are a helpful assistant that understands Bitcoin wallet operations.' 
+        {
+          role: 'system',
+          content:
+            'You are a helpful assistant that understands Bitcoin wallet operations.'
         },
         {
           role: 'user',
-          content: 'I need to generate a master node for testing purposes on the regtest network. Can you help me with the parameters?'
+          content:
+            'I need to generate a master node for testing purposes on the regtest network. Can you help me with the parameters?'
         }
       ],
       tools,
-      tool_choice: "auto"
+      tool_choice: 'auto'
     });
 
     const toolCall = response.choices[0]?.message.tool_calls?.[0];
     expect(toolCall).toBeDefined();
     expect(toolCall?.function).toBeDefined();
-    
+
     console.log('AI Tool Call:', JSON.stringify(toolCall, null, 2));
 
     if (toolCall?.function) {
