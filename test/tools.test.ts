@@ -6,7 +6,7 @@ import {
 } from '../dist/index';
 import type { ChatCompletionMessageParam } from 'openai/resources';
 
-function serializeMasterNode(result: ReturnType<getMasterNodeFromMnemonic>) {
+function serializeMasterNode(result: ReturnType<typeof getMasterNodeFromMnemonic>) {
   return JSON.stringify(result, (_key, value) =>
     value instanceof Buffer ? value.toString('hex') : value
   );
