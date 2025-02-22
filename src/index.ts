@@ -1,18 +1,25 @@
 import OpenAI from "openai";
 import "dotenv/config";
 
+type ChatMessage = {
+  role: "system" | "user" | "assistant";
+  content: string;
+};
+
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-(async () => {
+const messages: ChatMessage[] = [
+  { role: "system", content: "You are a helpful assistant." },
+  { role: "user", content: "How much is 2+2?" },
+];
+
+const main = async (): Promise<void> => {
   try {
     const response = await openai.chat.completions.create({
-      model: "gpt-4o",
-      messages: [
-        { role: "system", content: "You are a helpful assistant." },
-        { role: "user", content: "How much is 2+2?" },
-      ],
+      model: "gpt-4",
+      messages,
       response_format: {
         type: "text",
       },
@@ -23,8 +30,22 @@ const openai = new OpenAI({
       presence_penalty: 0,
     });
 
-    console.log(response.choices[0].message.content);
-  } catch (error) {
-    console.error("Error:", error);
+    const content = response.choices[0]?.message.content;
+    if (!content) {
+      throw new Error("No response content received");
+    }
+
+    console.log(content);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error("Error:", error.message);
+    } else {
+      console.error("Unknown error occurred");
+    }
   }
-})();
+};
+
+main().catch((error: unknown) => {
+  console.error("Unhandled error:", error);
+  process.exit(1);
+});
