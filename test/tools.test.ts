@@ -4,6 +4,13 @@ import {
   getMasterNodeFromMnemonic,
   getMasterNodeFromMnemonicSchema
 } from '../dist/index';
+import type { ChatCompletionMessageParam } from 'openai/resources';
+
+function serializeMasterNode(result: ReturnType<getMasterNodeFromMnemonic>) {
+  return JSON.stringify(result, (_key, value) =>
+    value instanceof Buffer ? value.toString('hex') : value
+  );
+}
 
 describe('Tools with OpenAI validation', () => {
   let openai: OpenAI;
@@ -22,7 +29,7 @@ describe('Tools with OpenAI validation', () => {
       }
     ];
 
-    const messages = [
+    const messages: ChatCompletionMessageParam[] = [
       {
         role: 'system',
         content:
@@ -46,7 +53,7 @@ describe('Tools with OpenAI validation', () => {
     expect(toolCall).toBeDefined();
     expect(toolCall?.function).toBeDefined();
 
-    console.log('AI Tool Call:', JSON.stringify(toolCall, null, 2));
+    console.log('AI Tool Call:', serializeMasterNode(toolCall));
 
     if (toolCall?.function) {
       const params = JSON.parse(toolCall.function.arguments);
@@ -57,6 +64,7 @@ describe('Tools with OpenAI validation', () => {
         params.mnemonic,
         params.networkType
       );
+      console.log(result);
 
       expect(result).toBeDefined();
       expect(result.network).toBeDefined();
@@ -69,22 +77,7 @@ describe('Tools with OpenAI validation', () => {
       });
       const finalResponse = await openai.chat.completions.create({
         model: 'gpt-4o',
-        messages: [
-          {
-            role: 'system',
-            content:
-              'You are a helpful assistant that understands Bitcoin wallet operations.'
-          },
-          {
-            role: 'user',
-            content:
-              'I need to generate a master node on the regtest network for mnemonic abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about.'
-          },
-          {
-            role: 'assistant',
-            content: `I've generated the master node with the following parameters: ${JSON.stringify(params)}. The node was successfully created with network type ${result.network.bech32}.`
-          }
-        ],
+        messages,
         tools,
         store: true
       });
