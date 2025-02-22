@@ -17,7 +17,7 @@ describe('Tools with OpenAI validation', () => {
   it('should validate and execute getMasterNodeFromMnemonic via OpenAI', async () => {
     const tools = [
       {
-        type: 'function',
+        type: "function" as const,
         function: getMasterNodeFromMnemonicSchema
       }
     ];
