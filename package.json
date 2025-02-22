@@ -2,15 +2,33 @@
   "name": "ai",
   "type": "module",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "homepage": "https://github.com/bitcoinerlab/ai",
+  "author": "Jose-Luis Landabaso",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "prettier": "@bitcoinerlab/configs/prettierConfig.json",
+  "eslintConfig": {
+    "extends": "./node_modules/@bitcoinerlab/configs/eslintConfig"
   },
-  "author": "",
-  "license": "ISC",
+  "jest": {
+    "preset": "@bitcoinerlab/configs"
+  },
+  "scripts": {
+    "lint": "eslint --ignore-path .gitignore --ext .ts src/ test/",
+    "build:test": "tsc --project ./node_modules/@bitcoinerlab/configs/tsconfig.test.json",
+    "build:src": "tsc --project ./node_modules/@bitcoinerlab/configs/tsconfig.src.json",
+    "build": "npm run build:src && npm run build:test",
+    "test": "npm run lint && npm run build && jest"
+  },
+  "files": [
+    "dist"
+  ],
   "dependencies": {
     "dotenv": "^16.4.7",
     "openai": "^4.85.1"
+  },
+  "devDependencies": {
+    "@bitcoinerlab/configs": "github:bitcoinerlab/configs"
   }
 }

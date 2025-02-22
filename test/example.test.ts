@@ -1,43 +1,17 @@
 import OpenAI from 'openai';
-import { jest } from '@jest/globals';
-
-// Mock OpenAI
-jest.mock('openai', () => {
-  return {
-    default: jest.fn().mockImplementation(() => ({
-      chat: {
-        completions: {
-          create: jest.fn()
-        }
-      }
-    }))
-  };
-});
+import 'dotenv/config';
 
 describe('OpenAI Chat Completion', () => {
-  let mockOpenAI: jest.Mocked<OpenAI>;
+  let openai: OpenAI;
 
   beforeEach(() => {
-    // Clear all mocks before each test
-    jest.clearAllMocks();
-    mockOpenAI = new OpenAI({ apiKey: 'test-key' }) as jest.Mocked<OpenAI>;
+    openai = new OpenAI({
+      apiKey: process.env['OPENAI_API_KEY']
+    });
   });
 
   it('should successfully get a chat completion', async () => {
-    const mockResponse = {
-      choices: [
-        {
-          message: {
-            content: '4'
-          }
-        }
-      ]
-    };
-
-    // Setup mock implementation
-    mockOpenAI.chat.completions.create.mockResolvedValueOnce(mockResponse);
-
-    const response = await mockOpenAI.chat.completions.create({
+    const response = await openai.chat.completions.create({
       model: 'gpt-4',
       messages: [
         { role: 'system', content: 'You are a helpful assistant.' },
@@ -46,36 +20,23 @@ describe('OpenAI Chat Completion', () => {
       response_format: { type: 'text' }
     });
 
-    expect(response?.choices[0]?.message.content).toBe('4');
-    expect(mockOpenAI.chat.completions.create).toHaveBeenCalledTimes(1);
-    expect(mockOpenAI.chat.completions.create).toHaveBeenCalledWith(
-      expect.objectContaining({
-        model: 'gpt-4',
-        messages: [
-          { role: 'system', content: 'You are a helpful assistant.' },
-          { role: 'user', content: 'How much is 2+2?' }
-        ]
-      })
-    );
-  });
+    const content = response.choices[0]?.message.content;
+    expect(content).toBeDefined();
+    expect(typeof content).toBe('string');
+    // We can't expect exact content since AI responses may vary
+    console.log('AI Response:', content);
+  }, 10000); // Increased timeout since API calls take time
 
   it('should handle errors appropriately', async () => {
-    const errorMessage = 'API Error';
-    mockOpenAI.chat.completions.create.mockRejectedValueOnce(
-      new Error(errorMessage)
-    );
-
     await expect(
-      mockOpenAI.chat.completions.create({
-        model: 'gpt-4',
+      openai.chat.completions.create({
+        model: 'non-existent-model', // This will cause an error
         messages: [
           { role: 'system', content: 'You are a helpful assistant.' },
           { role: 'user', content: 'How much is 2+2?' }
         ],
         response_format: { type: 'text' }
       })
-    ).rejects.toThrow(errorMessage);
-
-    expect(mockOpenAI.chat.completions.create).toHaveBeenCalledTimes(1);
+    ).rejects.toThrow();
   });
 });
