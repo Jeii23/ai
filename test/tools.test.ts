@@ -17,13 +17,13 @@ describe('Tools with OpenAI validation', () => {
   it('should validate and execute getMasterNodeFromMnemonic via OpenAI', async () => {
     const tools = [
       {
-        type: "function" as const,
+        type: 'function' as const,
         function: getMasterNodeFromMnemonicSchema
       }
     ];
 
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4',
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-4o',
       messages: [
         {
           role: 'system',
@@ -33,14 +33,14 @@ describe('Tools with OpenAI validation', () => {
         {
           role: 'user',
           content:
-            'I need to generate a master node for testing purposes on the regtest network. Can you help me with the parameters?'
+            'I need to generate a master node on the regtest network for mnemonic abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about.'
         }
       ],
       tools,
-      tool_choice: 'auto'
+      store: true
     });
 
-    const toolCall = response.choices[0]?.message.tool_calls?.[0];
+    const toolCall = completion.choices[0]?.message.tool_calls?.[0];
     expect(toolCall).toBeDefined();
     expect(toolCall?.function).toBeDefined();
 
