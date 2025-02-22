@@ -1,4 +1,4 @@
-import OpenAI from 'openai';
+import { OpenAI } from 'openai';
 import 'dotenv/config';
 import {
   getMasterNodeFromMnemonic,
@@ -15,38 +15,47 @@ describe('Tools with OpenAI validation', () => {
   });
 
   it('should validate and execute getMasterNodeFromMnemonic via OpenAI', async () => {
-    const systemPrompt = `You are a helpful assistant that validates and executes Bitcoin-related functions.
-Given this function schema:
-${JSON.stringify(getMasterNodeFromMnemonicSchema, null, 2)}
-
-Please provide valid parameters to call this function for a regtest network.`;
+    const tools = [{
+      type: "function",
+      function: getMasterNodeFromMnemonicSchema
+    }];
 
     const response = await openai.chat.completions.create({
       model: 'gpt-4',
       messages: [
-        { role: 'system', content: systemPrompt },
+        { 
+          role: 'system', 
+          content: 'You are a helpful assistant that understands Bitcoin wallet operations.' 
+        },
         {
           role: 'user',
-          content:
-            'I need parameters to generate a master node for testing purposes.'
+          content: 'I need to generate a master node for testing purposes on the regtest network. Can you help me with the parameters?'
         }
       ],
-      response_format: { type: 'text' }
+      tools,
+      tool_choice: "auto"
     });
 
-    const content = response.choices[0]?.message.content;
-    expect(content).toBeDefined();
-    console.log('AI Suggestion:', content);
+    const toolCall = response.choices[0]?.message.tool_calls?.[0];
+    expect(toolCall).toBeDefined();
+    expect(toolCall?.function).toBeDefined();
+    
+    console.log('AI Tool Call:', JSON.stringify(toolCall, null, 2));
 
-    // Regardless of AI's response, we'll test with known good values
-    const result = getMasterNodeFromMnemonic(
-      'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about',
-      'REGTEST'
-    );
+    if (toolCall?.function) {
+      const params = JSON.parse(toolCall.function.arguments);
+      expect(params.networkType).toBe('REGTEST');
+      expect(typeof params.mnemonic).toBe('string');
 
-    expect(result).toBeDefined();
-    expect(result.network).toBeDefined();
-    expect(result.network.bech32).toBe('bcrt'); // Verify it's really regtest
+      const result = getMasterNodeFromMnemonic(
+        params.mnemonic,
+        params.networkType
+      );
+
+      expect(result).toBeDefined();
+      expect(result.network).toBeDefined();
+      expect(result.network.bech32).toBe('bcrt'); // Verify it's really regtest
+    }
   }, 15000);
 
   it('should directly test getMasterNodeFromMnemonic with regtest', () => {
