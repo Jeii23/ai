@@ -22,20 +22,22 @@ describe('Tools with OpenAI validation', () => {
       }
     ];
 
+    const messages = [
+      {
+        role: 'system',
+        content:
+          'You are a helpful assistant that understands Bitcoin wallet operations.'
+      },
+      {
+        role: 'user',
+        content:
+          'I need to generate a master node on the regtest network for mnemonic abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about.'
+      }
+    ];
+
     const completion = await openai.chat.completions.create({
       model: 'gpt-4o',
-      messages: [
-        {
-          role: 'system',
-          content:
-            'You are a helpful assistant that understands Bitcoin wallet operations.'
-        },
-        {
-          role: 'user',
-          content:
-            'I need to generate a master node on the regtest network for mnemonic abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about.'
-        }
-      ],
+      messages,
       tools,
       store: true
     });
@@ -59,6 +61,38 @@ describe('Tools with OpenAI validation', () => {
       expect(result).toBeDefined();
       expect(result.network).toBeDefined();
       expect(result.network.bech32).toBe('bcrt'); // Verify it's really regtest
+      // Send the result back to OpenAI
+      messages.push({
+        role: 'tool',
+        tool_call_id: toolCall.id,
+        content: JSON.stringify(result)
+      });
+      const finalResponse = await openai.chat.completions.create({
+        model: 'gpt-4o',
+        messages: [
+          {
+            role: 'system',
+            content:
+              'You are a helpful assistant that understands Bitcoin wallet operations.'
+          },
+          {
+            role: 'user',
+            content:
+              'I need to generate a master node on the regtest network for mnemonic abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about.'
+          },
+          {
+            role: 'assistant',
+            content: `I've generated the master node with the following parameters: ${JSON.stringify(params)}. The node was successfully created with network type ${result.network.bech32}.`
+          }
+        ],
+        tools,
+        store: true
+      });
+
+      console.log(
+        'AI Final Response:',
+        finalResponse.choices[0]?.message.content
+      );
     }
   }, 15000);
 
