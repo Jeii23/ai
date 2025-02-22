@@ -16,7 +16,7 @@ jest.mock('openai', () => {
 
 describe('OpenAI Chat Completion', () => {
   let mockOpenAI: jest.Mocked<OpenAI>;
-  
+
   beforeEach(() => {
     // Clear all mocks before each test
     jest.clearAllMocks();
@@ -46,7 +46,7 @@ describe('OpenAI Chat Completion', () => {
       response_format: { type: 'text' }
     });
 
-    expect(response.choices[0].message.content).toBe('4');
+    expect(response?.choices[0]?.message.content).toBe('4');
     expect(mockOpenAI.chat.completions.create).toHaveBeenCalledTimes(1);
     expect(mockOpenAI.chat.completions.create).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -61,16 +61,20 @@ describe('OpenAI Chat Completion', () => {
 
   it('should handle errors appropriately', async () => {
     const errorMessage = 'API Error';
-    mockOpenAI.chat.completions.create.mockRejectedValueOnce(new Error(errorMessage));
+    mockOpenAI.chat.completions.create.mockRejectedValueOnce(
+      new Error(errorMessage)
+    );
 
-    await expect(mockOpenAI.chat.completions.create({
-      model: 'gpt-4',
-      messages: [
-        { role: 'system', content: 'You are a helpful assistant.' },
-        { role: 'user', content: 'How much is 2+2?' }
-      ],
-      response_format: { type: 'text' }
-    })).rejects.toThrow(errorMessage);
+    await expect(
+      mockOpenAI.chat.completions.create({
+        model: 'gpt-4',
+        messages: [
+          { role: 'system', content: 'You are a helpful assistant.' },
+          { role: 'user', content: 'How much is 2+2?' }
+        ],
+        response_format: { type: 'text' }
+      })
+    ).rejects.toThrow(errorMessage);
 
     expect(mockOpenAI.chat.completions.create).toHaveBeenCalledTimes(1);
   });
