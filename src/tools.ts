@@ -16,6 +16,30 @@ export const getMasterNodeFromMnemonic = (
   }[networkType];
 
   const masterNode = BIP32.fromSeed(mnemonicToSeedSync(mnemonic), network);
+  masterNode.fingerprint.toString('hex');
   return masterNode;
 };
 
+export const getMasterNodeFromMnemonicSchema = {
+  name: 'getMasterNodeFromMnemonic',
+  description:
+    'Generates a master BIP32 node from a given mnemonic and network type.',
+  strict: true,
+  parameters: {
+    type: 'object',
+    properties: {
+      mnemonic: {
+        type: 'string',
+        description:
+          'The BIP39 mnemonic phrase used to generate the master node.'
+      },
+      networkType: {
+        type: 'string',
+        enum: ['REGTEST', 'TESTNET', 'BITCOIN'],
+        description: 'The Bitcoin network type (Mainnet, Testnet, or Regtest).'
+      }
+    },
+    required: ['mnemonic', 'networkType'],
+    additionalProperties: false
+  }
+};
