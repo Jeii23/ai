@@ -5,6 +5,9 @@ import { networks } from 'bitcoinjs-lib';
 
 const { BIP32 } = descriptors.DescriptorsFactory(secp256k1);
 
+// Store mnemonics in memory
+const mnemonicStore = new Map<string, { mnemonic: string; networkType: string }>();
+
 export const getMasterNodeFromMnemonic = (
   mnemonic: string,
   networkType: 'REGTEST' | 'TESTNET' | 'BITCOIN'
@@ -16,14 +19,21 @@ export const getMasterNodeFromMnemonic = (
   }[networkType];
 
   const masterNode = BIP32.fromSeed(mnemonicToSeedSync(mnemonic), network);
-  masterNode.fingerprint.toString('hex');
-  return masterNode;
+  const fingerprint = masterNode.fingerprint.toString('hex');
+  
+  // Store mnemonic with fingerprint as key
+  mnemonicStore.set(fingerprint, { mnemonic, networkType });
+  
+  return {
+    id: fingerprint,
+    network: masterNode.network
+  };
 };
 
 export const getMasterNodeFromMnemonicSchema = {
   name: 'getMasterNodeFromMnemonic',
   description:
-    'Generates a master BIP32 node from a given mnemonic and network type.',
+    'Generates a master BIP32 node from a given mnemonic and network type, returning a fingerprint ID that can be used to reference this wallet.',
   strict: true,
   parameters: {
     type: 'object',
@@ -41,5 +51,18 @@ export const getMasterNodeFromMnemonicSchema = {
     },
     required: ['mnemonic', 'networkType'],
     additionalProperties: false
+  },
+  returns: {
+    type: 'object',
+    properties: {
+      id: {
+        type: 'string',
+        description: 'The fingerprint (4 bytes) of the master public key in hex format'
+      },
+      network: {
+        type: 'object',
+        description: 'Network information including bech32 prefix'
+      }
+    }
   }
 };
