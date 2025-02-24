@@ -1,6 +1,8 @@
 {
   {
     "compilerOptions": {
+      "moduleResolution": "node",
+      "baseUrl": ".",
       "resolveJsonModule": true,
     },
     "extends": "./node_modules/@bitcoinerlab/configs/tsconfig.json"

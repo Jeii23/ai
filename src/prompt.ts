@@ -1,5 +1,6 @@
 import { OpenAI } from 'openai';
-import { tools } from './tools/index';
+import { tools } from './tools';
+if (tools === undefined) throw new Error('Invalid tools');
 import type { ChatCompletionMessageParam } from 'openai/resources';
 import { executeToolCall } from './tools/toolExecutor';
 
