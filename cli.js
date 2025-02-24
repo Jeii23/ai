@@ -23,7 +23,7 @@ async function processCommand(command) {
   try {
     const response = await promptHandler.sendCommand(command);
     console.log('\nResponse:', response.content);
-    
+
     if (response.toolCalls.length > 0) {
       console.log('\nTool Calls:');
       response.toolCalls.forEach(({ name, args, result }) => {
@@ -32,7 +32,7 @@ async function processCommand(command) {
         console.log('  Result:', result);
       });
     }
-    
+
     console.log('\nMetrics:', {
       totalTokens: response.metrics.totalTokens,
       estimatedCost: `$${response.metrics.estimatedCost.toFixed(4)}`

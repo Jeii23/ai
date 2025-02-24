@@ -36,10 +36,8 @@ This AI assistant uses BitcoinerLAB's open-source libraries and has deep knowled
     ];
   }
 
-  async sendCommand(
-    command: string
-  ): Promise<{ 
-    content: string; 
+  async sendCommand(command: string): Promise<{
+    content: string;
     metrics: CostMetrics;
     toolCalls: Array<{
       name: string;
@@ -85,7 +83,7 @@ This AI assistant uses BitcoinerLAB's open-source libraries and has deep knowled
         this.messages.push({
           role: 'tool',
           tool_call_id: toolCall.id,
-          content: JSON.stringify(toolResult)
+          content: JSON.stringify(result)
         });
       }
 
