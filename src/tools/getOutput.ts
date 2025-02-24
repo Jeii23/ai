@@ -2,6 +2,7 @@ import * as secp256k1 from '@bitcoinerlab/secp256k1';
 import * as descriptors from '@bitcoinerlab/descriptors';
 import { getNetwork } from '../utils/networks';
 import type { NetworkType } from '../types';
+import type { Preimage } from '@bitcoinerlab/descriptors/dist/types';
 
 const { Output } = descriptors.DescriptorsFactory(secp256k1);
 
@@ -11,12 +12,9 @@ const outputStore = new Map<string, descriptors.OutputInstance>();
 interface GetOutputParams {
   descriptor: string;
   networkType: NetworkType;
-  signersPubKeys?: string[];
-  index?: number;
-  preimages?: Array<{
-    digest: string;
-    preimage: string;
-  }>;
+  signersPubKeys: string[] | null;
+  index: number | null;
+  preimages: Array<Preimage> | null;
 }
 
 export const getOutput = ({
@@ -28,15 +26,15 @@ export const getOutput = ({
 }: GetOutputParams): string => {
   const network = getNetwork(networkType);
 
-  // Convert hex strings to Buffers for signersPubKeys
+  // Convert hex strings to Buffers for signersPubKeys if provided
   const pubKeyBuffers = signersPubKeys?.map(hex => Buffer.from(hex, 'hex'));
 
   const output = new Output({
     descriptor,
     network,
-    ...(pubKeyBuffers !== undefined && { signersPubKeys: pubKeyBuffers }),
-    ...(index !== undefined && { index }),
-    ...(preimages !== undefined && { preimages })
+    ...(pubKeyBuffers !== null && { signersPubKeys: pubKeyBuffers }),
+    ...(index !== null && { index }),
+    ...(preimages !== null && { preimages })
   });
 
   // Get the address which will serve as the ID
@@ -69,28 +67,28 @@ export const getOutputSchema = {
         description: 'The Bitcoin network type'
       },
       signersPubKeys: {
-        type: 'array',
+        type: ['array', 'null'],
         items: {
           type: 'string',
           description: 'Public key in hex format'
         },
         description:
-          'Array of public keys (in hex) that will be used for signing. Only needed for complex descriptors with multiple spending paths. Set this parameter to an array containing the public keys involved in the desired spending path. Leave it undefined if you only need to generate the scriptPubKey or address for a descriptor, or if all the public keys involved in the descriptor will sign the transaction. In the latter case, the satisfier will automatically choose the most optimal spending path (if more than one is available).'
+          'Array of public keys (in hex) that will be used for signing. Only needed for complex descriptors with multiple spending paths. Set this parameter to an array containing the public keys involved in the desired spending path. Use null if not applicable.'
       },
       index: {
-        type: 'number',
+        type: ['number', 'null'],
         description:
-          'Index to use for ranged descriptors. This parameter is required when the descriptor is ranged (has a wildcard).'
+          'Index to use for ranged descriptors. This parameter is required when the descriptor is ranged (has a wildcard). Use null if not applicable.'
       },
       preimages: {
-        type: 'array',
+        type: ['array', 'null'],
         items: {
           type: 'object',
           properties: {
             digest: {
               type: 'string',
               description:
-                'The digest string (e.g., "sha256(cdabb7...)" or "ripemd160(095ff4...)"). Accepted functions: sha256, hash256, ripemd160, hash160. Digests must be: 64-character HEX for sha256, hash160 or 30-character HEX for ripemd160 or hash160.'
+                'The digest string (e.g., "sha256(cdabb7...)" or "ripemd160(095ff4...)"). Accepted functions: sha256, hash256, ripemd160, hash160. Digests must be: 64-character HEX for sha256, hash256 or 30-character HEX for ripemd160 or hash160.'
             },
             preimage: {
               type: 'string',
@@ -102,10 +100,17 @@ export const getOutputSchema = {
           additionalProperties: false
         },
         description:
-          'Array of preimages if the miniscript-based descriptor uses them'
+          'Array of preimages if the miniscript-based descriptor uses them. Use null if not applicable.'
       }
     },
-    required: ['descriptor', 'networkType'],
+    // Include all keys so that strict mode is satisfied.
+    required: [
+      'descriptor',
+      'networkType',
+      'signersPubKeys',
+      'index',
+      'preimages'
+    ],
     additionalProperties: false
   }
 };

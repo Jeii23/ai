@@ -11,9 +11,9 @@ interface DescriptorParams {
   fingerprint: string;
   type: DescriptorType;
   networkType: NetworkType;
-  account?: number;
-  change?: number;
-  index?: number | '*';
+  account: number;
+  change: number;
+  index: number | '*';
 }
 
 export const getDescriptor = ({
