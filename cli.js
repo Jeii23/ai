@@ -5,7 +5,7 @@ const readline = require('readline');
 require('dotenv').config();
 
 const args = process.argv.slice(2);
-const showDetails = args.includes('--details');
+const showDetails = args.includes('--verbose');
 
 if (!process.env.OPENAI_API_KEY) {
   console.error('Error: OPENAI_API_KEY environment variable is not set');
@@ -22,7 +22,7 @@ const rl = readline.createInterface({
 if (showDetails) {
   console.log('Bitcoin Wallet Assistant CLI (type "exit" to quit)');
   console.log('------------------------------------------------');
-  console.log('Run without --details for minimal output');
+  console.log('Run without --verbose for minimal output');
 }
 
 async function processCommand(command) {
