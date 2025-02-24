@@ -3,6 +3,7 @@ import * as descriptors from '@bitcoinerlab/descriptors';
 import { mnemonicToSeedSync } from 'bip39';
 import { networks } from 'bitcoinjs-lib';
 import type { BIP32Interface } from 'bip32';
+import type { NetworkType } from '../types';
 
 const { BIP32 } = descriptors.DescriptorsFactory(secp256k1);
 
@@ -17,12 +18,13 @@ export const getMasterNodeFromMnemonic = ({
   networkType
 }: {
   mnemonic: string;
-  networkType: 'REGTEST' | 'TESTNET' | 'BITCOIN';
+  networkType: NetworkType;
 }) => {
   const network = {
     REGTEST: networks.regtest,
     TESTNET: networks.testnet,
-    BITCOIN: networks.bitcoin
+    BITCOIN: networks.bitcoin,
+    TAPE: networks.regtest // TAPE network uses regtest configuration
   }[networkType];
 
   const masterNode = BIP32.fromSeed(mnemonicToSeedSync(mnemonic), network);
@@ -51,7 +53,7 @@ export const getMasterNodeFromMnemonicSchema = {
       },
       networkType: {
         type: 'string',
-        enum: ['REGTEST', 'TESTNET', 'BITCOIN'],
+        enum: ['REGTEST', 'TESTNET', 'BITCOIN', 'TAPE'],
         description: 'The Bitcoin network type (Mainnet, Testnet, or Regtest).'
       }
     },
