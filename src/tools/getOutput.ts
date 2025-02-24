@@ -22,21 +22,21 @@ interface GetOutputParams {
 export const getOutput = ({
   descriptor,
   networkType,
-  signersPubKeys = [],
+  signersPubKeys,
   index,
-  preimages = []
+  preimages
 }: GetOutputParams): string => {
   const network = getNetwork(networkType);
 
   // Convert hex strings to Buffers for signersPubKeys
-  const pubKeyBuffers = signersPubKeys.map(hex => Buffer.from(hex, 'hex'));
+  const pubKeyBuffers = signersPubKeys?.map(hex => Buffer.from(hex, 'hex'));
 
   const output = new Output({
     descriptor,
     network,
-    signersPubKeys: pubKeyBuffers,
+    ...(pubKeyBuffers !== undefined && { signersPubKeys: pubKeyBuffers }),
     ...(index !== undefined && { index }),
-    preimages
+    ...(preimages !== undefined && { preimages })
   });
 
   // Get the address which will serve as the ID
