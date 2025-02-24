@@ -20,7 +20,9 @@ const isToolFunction = (value: unknown): value is ToolFunction =>
 const implementations = Object.fromEntries(
   Object.entries(allTools).filter(([key]) => {
     const schemaName = `${key}Schema`;
-    return typeof allTools[schemaName] === 'object' && isToolFunction(allTools[key]);
+    return (
+      typeof allTools[schemaName] === 'object' && isToolFunction(allTools[key])
+    );
   })
 );
 
