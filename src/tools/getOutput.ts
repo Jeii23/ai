@@ -98,7 +98,8 @@ export const getOutputSchema = {
                 'Hex encoded preimage (32 bytes, 64 characters in hex)'
             }
           },
-          required: ['digest', 'preimage']
+          required: ['digest', 'preimage'],
+          additionalProperties: false
         },
         description:
           'Array of preimages if the miniscript-based descriptor uses them'
