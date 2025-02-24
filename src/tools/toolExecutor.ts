@@ -9,15 +9,17 @@ const schemas = Object.entries(allTools)
     function: schema
   }));
 
-// Type guard to check if a value is a function
-const isFunction = (value: unknown): value is Function =>
+type ToolFunction = (...args: any[]) => Promise<unknown> | unknown;
+
+// Type guard to check if a value is a tool function
+const isToolFunction = (value: unknown): value is ToolFunction =>
   typeof value === 'function';
 
 // Find all tool implementations (they match schema names without 'Schema' suffix)
 const implementations = Object.fromEntries(
   Object.entries(allTools).filter(([key]) => {
     const schemaName = `${key}Schema`;
-    return typeof allTools[schemaName] === 'object' && isFunction(allTools[key]);
+    return typeof allTools[schemaName] === 'object' && isToolFunction(allTools[key]);
   })
 );
 
@@ -25,7 +27,7 @@ export async function executeToolCall(toolCall: ChatCompletionMessageToolCall) {
   try {
     const implementation = implementations[toolCall.function.name];
 
-    if (!implementation || !isFunction(implementation)) {
+    if (!implementation || !isToolFunction(implementation)) {
       throw new Error(`Unknown tool: ${toolCall.function.name}`);
     }
 
