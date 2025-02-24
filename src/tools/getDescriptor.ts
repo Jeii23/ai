@@ -1,4 +1,3 @@
-import * as secp256k1 from '@bitcoinerlab/secp256k1';
 import * as descriptors from '@bitcoinerlab/descriptors';
 import { networks } from 'bitcoinjs-lib';
 import { mnemonicStore } from './getMasterNodeFromMnemonic';
@@ -38,8 +37,8 @@ export const getDescriptor = ({
   }[networkType];
 
   const descriptorFunctions = {
-    'pkh': scriptExpressions.pkhBIP32,
-    'wpkh': scriptExpressions.wpkhBIP32,
+    pkh: scriptExpressions.pkhBIP32,
+    wpkh: scriptExpressions.wpkhBIP32,
     'sh-wpkh': scriptExpressions.shWpkhBIP32
   };
 
@@ -60,19 +59,22 @@ export const getDescriptor = ({
 
 export const getDescriptorSchema = {
   name: 'getDescriptor',
-  description: 'Generates a Bitcoin descriptor string for a given master node (identified by fingerprint) and parameters.',
+  description:
+    'Generates a Bitcoin descriptor string for a given master node (identified by fingerprint) and parameters.',
   strict: true,
   parameters: {
     type: 'object',
     properties: {
       fingerprint: {
         type: 'string',
-        description: 'The fingerprint of the master node to use (previously generated with getMasterNodeFromMnemonic)'
+        description:
+          'The fingerprint of the master node to use (previously generated with getMasterNodeFromMnemonic)'
       },
       type: {
         type: 'string',
         enum: ['pkh', 'wpkh', 'sh-wpkh'],
-        description: 'The type of descriptor to generate (pkh for legacy, wpkh for native segwit, sh-wpkh for wrapped segwit)'
+        description:
+          'The type of descriptor to generate (pkh for legacy, wpkh for native segwit, sh-wpkh for wrapped segwit)'
       },
       networkType: {
         type: 'string',
@@ -86,12 +88,14 @@ export const getDescriptorSchema = {
       },
       change: {
         type: 'number',
-        description: 'The change value (0 for external addresses, 1 for change addresses, defaults to 0)',
+        description:
+          'The change value (0 for external addresses, 1 for change addresses, defaults to 0)',
         default: 0
       },
       index: {
         type: ['number', 'string'],
-        description: 'The address index (use "*" for ranged descriptor, defaults to "*")',
+        description:
+          'The address index (use "*" for ranged descriptor, defaults to "*")',
         default: '*'
       }
     },
