@@ -33,7 +33,7 @@ async function processCommand(command) {
 }
 
 function prompt() {
-  rl.question('\n> ', async (command) => {
+  rl.question('\n> ', async command => {
     if (command.toLowerCase() === 'exit') {
       rl.close();
       return;
