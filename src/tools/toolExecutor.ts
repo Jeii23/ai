@@ -1,12 +1,22 @@
 import type { ChatCompletionMessageToolCall } from 'openai/resources/chat/completions';
 import * as allTools from './index';
 
+import type { ChatCompletionTool } from 'openai/resources/chat/completions';
+
 // Find all exported schemas (they end with 'Schema')
-const schemas = Object.entries(allTools)
+const schemas: ChatCompletionTool[] = Object.entries(allTools)
   .filter(([key]) => key.endsWith('Schema'))
   .map(([_, schema]) => ({
     type: 'function' as const,
-    function: schema
+    function: schema as {
+      name: string;
+      description: string;
+      parameters: {
+        type: string;
+        properties: Record<string, unknown>;
+        required: string[];
+      };
+    }
   }));
 
 type ToolArgs = Record<string, unknown>;
