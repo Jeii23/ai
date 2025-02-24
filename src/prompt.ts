@@ -31,7 +31,7 @@ export class PromptHandler {
       store: true
     });
 
-    const response = completion.choices[0]?.message;
+    let response = completion.choices[0]?.message;
     if (!response) throw new Error('No response from AI');
 
     this.messages.push(response);
@@ -50,10 +50,10 @@ export class PromptHandler {
 
       // Get next response from AI
       const nextResponse = await this.openai.chat.completions.create({
-        model: 'gpt-4',
+        model: 'gpt-4o',
         messages: this.messages,
         tools,
-        tool_choice: 'auto'
+        store: true
       });
 
       response = nextResponse.choices[0]?.message;
