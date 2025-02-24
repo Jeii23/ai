@@ -7,7 +7,7 @@ import type { BIP32Interface } from 'bip32';
 const { BIP32 } = descriptors.DescriptorsFactory(secp256k1);
 
 // Store mnemonics in memory
-const mnemonicStore = new Map<
+export const mnemonicStore = new Map<
   string,
   { mnemonic: string; networkType: string; masterNode: BIP32Interface }
 >();
