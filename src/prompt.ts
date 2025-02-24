@@ -1,7 +1,6 @@
 import { OpenAI } from 'openai';
 import type { ChatCompletionMessageParam } from 'openai/resources';
 import { tools, executeToolCall } from './tools/toolExecutor';
-if (tools === undefined) throw new Error('Invalid tools');
 
 export class PromptHandler {
   private openai: OpenAI;

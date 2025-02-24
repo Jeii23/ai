@@ -2,7 +2,7 @@ import type { ChatCompletionMessageToolCall } from 'openai/resources/chat/comple
 import {
   getMasterNodeFromMnemonicSchema,
   getMasterNodeFromMnemonic
-} from './masterNode';
+} from './getMasterNodeFromMnemonic';
 
 // Map of tool names to their implementation functions
 const toolImplementations = {
