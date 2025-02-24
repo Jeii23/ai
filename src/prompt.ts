@@ -31,18 +31,22 @@ export class PromptHandler {
     ];
   }
 
-  async sendCommand(command: string): Promise<string> {
+  async sendCommand(
+    command: string
+  ): Promise<{ content: string; metrics: CostMetrics }> {
     this.messages.push({
       role: 'user',
       content: command
     });
 
-    const completion = await this.trackCost(this.openai.chat.completions.create({
-      model: 'gpt-4o',
-      messages: this.messages,
-      tools,
-      store: true
-    });
+    const completion = await this.trackCost(
+      this.openai.chat.completions.create({
+        model: 'gpt-4o',
+        messages: this.messages,
+        tools,
+        store: true
+      })
+    );
 
     let response = completion.choices[0]?.message;
     if (!response) throw new Error('No response from AI');
@@ -53,6 +57,7 @@ export class PromptHandler {
     while (response.tool_calls) {
       // Handle all tool calls in the current response
       for (const toolCall of response.tool_calls) {
+        console.log(`Function Call: ${toolCall.function.name}`);
         const toolResult = await this.executeToolCall(toolCall);
         this.messages.push({
           role: 'tool',
@@ -62,12 +67,14 @@ export class PromptHandler {
       }
 
       // Get next response from AI
-      const nextResponse = await this.trackCost(this.openai.chat.completions.create({
-        model: 'gpt-4o',
-        messages: this.messages,
-        tools,
-        store: true
-      });
+      const nextResponse = await this.trackCost(
+        this.openai.chat.completions.create({
+          model: 'gpt-4o',
+          messages: this.messages,
+          tools,
+          store: true
+        })
+      );
 
       response = nextResponse.choices[0]?.message;
       if (!response) {
@@ -86,16 +93,19 @@ export class PromptHandler {
 
   private executeToolCall = executeToolCall;
 
-  private async trackCost(promise: Promise<ChatCompletion>): Promise<ChatCompletion> {
+  private async trackCost(
+    promise: Promise<ChatCompletion>
+  ): Promise<ChatCompletion> {
     const response = await promise;
     if (response.usage) {
       this.costMetrics.promptTokens += response.usage.prompt_tokens;
       this.costMetrics.completionTokens += response.usage.completion_tokens;
       this.costMetrics.totalTokens += response.usage.total_tokens;
-      // GPT-4 costs: $0.03/1K prompt tokens, $0.06/1K completion tokens
-      this.costMetrics.estimatedCost += 
-        (response.usage.prompt_tokens * 0.03 / 1000) +
-        (response.usage.completion_tokens * 0.06 / 1000);
+
+      // GPT-4o costs: $0.0025/1K prompt tokens, $0.01/1K completion tokens
+      this.costMetrics.estimatedCost +=
+        (response.usage.prompt_tokens * 0.0025) / 1000 +
+        (response.usage.completion_tokens * 0.01) / 1000;
     }
     return response;
   }
