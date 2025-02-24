@@ -83,20 +83,17 @@ export const getDescriptorSchema = {
       },
       account: {
         type: 'number',
-        description: 'The account number (defaults to 0)',
-        default: 0
+        description: 'The account number (defaults to 0)'
       },
       change: {
         type: 'number',
         description:
-          'The change value (0 for external addresses, 1 for change addresses, defaults to 0)',
-        default: 0
+          'The change value (0 for external addresses, 1 for change addresses, defaults to 0)'
       },
       index: {
         type: ['number', 'string'],
         description:
-          'The address index (use "*" for ranged descriptor, defaults to "*")',
-        default: '*'
+          'The address index (use "*" for ranged descriptor, defaults to "*")'
       }
     },
     required: ['fingerprint', 'type', 'networkType'],
