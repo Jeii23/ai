@@ -3,6 +3,7 @@ import * as descriptors from '@bitcoinerlab/descriptors';
 import { getNetwork } from '../utils/networks';
 import type { NetworkType } from '../types';
 import type { Preimage } from '@bitcoinerlab/descriptors/dist/types';
+import type { Network } from 'bitcoinjs-lib';
 
 const { Output } = descriptors.DescriptorsFactory(secp256k1);
 
@@ -27,7 +28,8 @@ export const getOutput = ({
   const network = getNetwork(networkType);
 
   // Convert hex strings to Buffers for signersPubKeys if provided
-  const pubKeyBuffers = signersPubKeys?.map(hex => Buffer.from(hex, 'hex'));
+  const pubKeyBuffers =
+    signersPubKeys && signersPubKeys.map(hex => Buffer.from(hex, 'hex'));
 
   const outputParams: {
     descriptor: string;
