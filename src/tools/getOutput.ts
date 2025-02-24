@@ -13,13 +13,18 @@ interface GetOutputParams {
   networkType: NetworkType;
   signersPubKeys?: string[];
   index?: number;
+  preimages?: Array<{
+    digest: string;
+    preimage: string;
+  }>;
 }
 
 export const getOutput = ({
   descriptor,
   networkType,
   signersPubKeys = [],
-  index
+  index,
+  preimages = []
 }: GetOutputParams): string => {
   const network = getNetwork(networkType);
 
@@ -30,7 +35,8 @@ export const getOutput = ({
     descriptor,
     network,
     signersPubKeys: pubKeyBuffers,
-    index
+    index,
+    preimages
   });
 
   // Get the address which will serve as the ID
@@ -75,6 +81,24 @@ export const getOutputSchema = {
         type: 'number',
         description:
           'Index to use for ranged descriptors. This parameter is required when the descriptor is ranged (has a wildcard).'
+      },
+      preimages: {
+        type: 'array',
+        items: {
+          type: 'object',
+          properties: {
+            digest: {
+              type: 'string',
+              description: 'The digest string (e.g., "sha256(cdabb7...)" or "ripemd160(095ff4...)")'
+            },
+            preimage: {
+              type: 'string',
+              description: 'Hex encoded preimage (32 bytes, 64 characters in hex)'
+            }
+          },
+          required: ['digest', 'preimage']
+        },
+        description: 'Array of preimages if the miniscript-based descriptor uses them'
       }
     },
     required: ['descriptor', 'networkType'],
