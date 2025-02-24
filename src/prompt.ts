@@ -23,8 +23,6 @@ export class PromptHandler {
       content: command
     });
 
-    console.log({ messages: this.messages, tools });
-
     const completion = await this.openai.chat.completions.create({
       model: 'gpt-4o',
       messages: this.messages,
