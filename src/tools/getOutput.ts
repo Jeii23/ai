@@ -35,7 +35,7 @@ export const getOutput = ({
     descriptor,
     network,
     signersPubKeys: pubKeyBuffers,
-    index,
+    ...(index !== undefined && { index }),
     preimages
   });
 
