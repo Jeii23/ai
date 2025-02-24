@@ -6,7 +6,9 @@ import {
 } from '../dist/index';
 import type { ChatCompletionMessageParam } from 'openai/resources';
 
-function serializeMasterNode(result: ReturnType<typeof getMasterNodeFromMnemonic>) {
+function serializeMasterNode(
+  result: ReturnType<typeof getMasterNodeFromMnemonic>
+) {
   return JSON.stringify(result, (_key, value) =>
     value instanceof Buffer ? value.toString('hex') : value
   );
@@ -53,28 +55,33 @@ describe('Tools with OpenAI validation', () => {
     expect(toolCall).toBeDefined();
     expect(toolCall?.function).toBeDefined();
 
-    console.log('AI Tool Call:', serializeMasterNode(toolCall));
+    console.log('AI Tool Call:', toolCall);
 
     if (toolCall?.function) {
+      const functionCallMessage = completion.choices[0]?.message;
+      if (!functionCallMessage)
+        throw new Error('AI did not reply valid message');
+      messages.push(functionCallMessage); // append model's function call message
       const params = JSON.parse(toolCall.function.arguments);
       expect(params.networkType).toBe('REGTEST');
       expect(typeof params.mnemonic).toBe('string');
 
-      const result = getMasterNodeFromMnemonic(
-        params.mnemonic,
-        params.networkType
-      );
-      console.log(result);
+      const result = getMasterNodeFromMnemonic({
+        mnemonic: params.mnemonic,
+        networkType: params.networkType
+      });
 
       expect(result).toBeDefined();
-      expect(result.network).toBeDefined();
-      expect(result.network.bech32).toBe('bcrt'); // Verify it's really regtest
-      // Send the result back to OpenAI
+
       messages.push({
+        // append result message
         role: 'tool',
         tool_call_id: toolCall.id,
-        content: JSON.stringify(result)
+        content: serializeMasterNode(result)
       });
+
+      console.log('Provide Result to AI:', messages);
+      // Send the result back to OpenAI
       const finalResponse = await openai.chat.completions.create({
         model: 'gpt-4o',
         messages,
@@ -90,13 +97,12 @@ describe('Tools with OpenAI validation', () => {
   }, 15000);
 
   it('should directly test getMasterNodeFromMnemonic with regtest', () => {
-    const result = getMasterNodeFromMnemonic(
-      'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about',
-      'REGTEST'
-    );
+    const result = getMasterNodeFromMnemonic({
+      mnemonic:
+        'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about',
+      networkType: 'REGTEST'
+    });
 
     expect(result).toBeDefined();
-    expect(result.network).toBeDefined();
-    expect(result.network.bech32).toBe('bcrt');
   });
 });

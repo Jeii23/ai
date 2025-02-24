@@ -1,6 +1,8 @@
 import OpenAI from 'openai';
 import 'dotenv/config';
 
+import { getMasterNodeFromMnemonic } from '../dist/index';
+
 describe('OpenAI Chat Completion', () => {
   let openai: OpenAI;
 
@@ -38,5 +40,12 @@ describe('OpenAI Chat Completion', () => {
         response_format: { type: 'text' }
       })
     ).rejects.toThrow();
+  });
+
+  it('test bitcoinjs', () => {
+    getMasterNodeFromMnemonic(
+      'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about',
+      'BITCOIN'
+    );
   });
 });

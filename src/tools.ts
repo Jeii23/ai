@@ -1,7 +1,7 @@
 import * as secp256k1 from '@bitcoinerlab/secp256k1';
 import * as descriptors from '@bitcoinerlab/descriptors';
 import { mnemonicToSeedSync } from 'bip39';
-import { Network, networks } from 'bitcoinjs-lib';
+import { networks } from 'bitcoinjs-lib';
 
 const { BIP32 } = descriptors.DescriptorsFactory(secp256k1);
 
@@ -11,10 +11,13 @@ const mnemonicStore = new Map<
   { mnemonic: string; networkType: string }
 >();
 
-export const getMasterNodeFromMnemonic = (
-  mnemonic: string,
-  networkType: 'REGTEST' | 'TESTNET' | 'BITCOIN'
-) => {
+export const getMasterNodeFromMnemonic = ({
+  mnemonic,
+  networkType
+}: {
+  mnemonic: string;
+  networkType: 'REGTEST' | 'TESTNET' | 'BITCOIN';
+}) => {
   const network = {
     REGTEST: networks.regtest,
     TESTNET: networks.testnet,
@@ -27,10 +30,7 @@ export const getMasterNodeFromMnemonic = (
   // Store mnemonic with fingerprint as key
   mnemonicStore.set(fingerprint, { mnemonic, networkType });
 
-  return {
-    id: fingerprint,
-    network: masterNode.network as Network
-  };
+  return fingerprint;
 };
 
 export const getMasterNodeFromMnemonicSchema = {
