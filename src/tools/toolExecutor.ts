@@ -1,5 +1,8 @@
 import type { ChatCompletionMessageToolCall } from 'openai/resources/chat/completions';
-import { getMasterNodeFromMnemonic } from './masterNode';
+import {
+  getMasterNodeFromMnemonicSchema,
+  getMasterNodeFromMnemonic
+} from './masterNode';
 
 // Map of tool names to their implementation functions
 const toolImplementations = {
@@ -26,3 +29,10 @@ export async function executeToolCall(toolCall: ChatCompletionMessageToolCall) {
     throw new Error('Tool execution failed with unknown error');
   }
 }
+
+export const tools = [
+  {
+    type: 'function' as const,
+    function: getMasterNodeFromMnemonicSchema
+  }
+];

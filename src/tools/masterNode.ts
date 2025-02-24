@@ -32,7 +32,7 @@ export const getMasterNodeFromMnemonic = ({
   return fingerprint;
 };
 
-export const schema = {
+export const getMasterNodeFromMnemonicSchema = {
   name: 'getMasterNodeFromMnemonic',
   description:
     'Generates a master BIP32 node from a given mnemonic and network type, returning a fingerprint ID that can be used to reference this master node.',
