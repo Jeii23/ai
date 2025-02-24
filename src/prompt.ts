@@ -1,5 +1,5 @@
 import { OpenAI } from 'openai';
-import { tools } from './tools';
+import { tools } from './tools/index';
 import type { ChatCompletionMessageParam } from 'openai/resources';
 import { executeToolCall } from './tools/toolExecutor';
 
