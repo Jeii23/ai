@@ -8,8 +8,11 @@ const toolImplementations = {
 
 export async function executeToolCall(toolCall: ChatCompletionMessageToolCall) {
   try {
-    const implementation = toolImplementations[toolCall.function.name as keyof typeof toolImplementations];
-    
+    const implementation =
+      toolImplementations[
+        toolCall.function.name as keyof typeof toolImplementations
+      ];
+
     if (!implementation) {
       throw new Error(`Unknown tool: ${toolCall.function.name}`);
     }
