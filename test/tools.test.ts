@@ -91,17 +91,6 @@ describe('Tools with OpenAI validation', () => {
 
       const content = finalResponse.choices[0]?.message.content;
       console.log('AI Final Response:', content);
-      if (finalResponse.usage) {
-        console.log('Cost Metrics:', {
-          promptTokens: finalResponse.usage.prompt_tokens,
-          completionTokens: finalResponse.usage.completion_tokens,
-          totalTokens: finalResponse.usage.total_tokens,
-          estimatedCost: (
-            (finalResponse.usage.prompt_tokens * 0.03 / 1000) +
-            (finalResponse.usage.completion_tokens * 0.06 / 1000)
-          ).toFixed(4)
-        });
-      }
     }
   }, 15000);
 

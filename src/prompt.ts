@@ -57,7 +57,10 @@ export class PromptHandler {
     while (response.tool_calls) {
       // Handle all tool calls in the current response
       for (const toolCall of response.tool_calls) {
-        console.log(`Function Call: ${toolCall.function.name}`, JSON.parse(toolCall.function.arguments));
+        console.log(
+          `Function Call: ${toolCall.function.name}`,
+          JSON.parse(toolCall.function.arguments)
+        );
         const toolResult = await this.executeToolCall(toolCall);
         this.messages.push({
           role: 'tool',
