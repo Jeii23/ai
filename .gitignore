@@ -8,3 +8,4 @@ docs/
 webdocs/
 test/**/*.js
 test/**/*.d.ts
+tmp/

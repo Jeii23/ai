@@ -6,7 +6,10 @@ import { networks } from 'bitcoinjs-lib';
 const { BIP32 } = descriptors.DescriptorsFactory(secp256k1);
 
 // Store mnemonics in memory
-const mnemonicStore = new Map<string, { mnemonic: string; networkType: string }>();
+const mnemonicStore = new Map<
+  string,
+  { mnemonic: string; networkType: string }
+>();
 
 export const getMasterNodeFromMnemonic = ({
   mnemonic,
@@ -39,7 +42,8 @@ export const schema = {
     properties: {
       mnemonic: {
         type: 'string',
-        description: 'The BIP39 mnemonic phrase used to generate the master node.'
+        description:
+          'The BIP39 mnemonic phrase used to generate the master node.'
       },
       networkType: {
         type: 'string',

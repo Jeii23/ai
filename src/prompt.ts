@@ -25,10 +25,10 @@ export class PromptHandler {
     });
 
     const completion = await this.openai.chat.completions.create({
-      model: 'gpt-4',
+      model: 'gpt-4o',
       messages: this.messages,
       tools,
-      tool_choice: 'auto'
+      store: true
     });
 
     const response = completion.choices[0]?.message;
@@ -48,15 +48,17 @@ export class PromptHandler {
 
       // Get AI's interpretation of the tool results
       const finalResponse = await this.openai.chat.completions.create({
-        model: 'gpt-4',
-        messages: this.messages
+        model: 'gpt-4o',
+        messages: this.messages,
+        tools,
+        store: true
       });
 
       const finalMessage = finalResponse.choices[0]?.message;
       if (!finalMessage) {
         throw new Error('No final response received from AI');
       }
-      
+
       this.messages.push(finalMessage);
       return finalMessage.content ?? 'No response content';
     }
@@ -71,7 +73,9 @@ export class PromptHandler {
       if (toolCall.function.name === 'getMasterNodeFromMnemonic') {
         const args = JSON.parse(toolCall.function.arguments);
         if (!args.mnemonic || !args.networkType) {
-          throw new Error('Missing required parameters: mnemonic or networkType');
+          throw new Error(
+            'Missing required parameters: mnemonic or networkType'
+          );
         }
         if (!['REGTEST', 'TESTNET', 'BITCOIN'].includes(args.networkType)) {
           throw new Error(`Invalid network type: ${args.networkType}`);

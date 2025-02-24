@@ -10,9 +10,9 @@ describe('PromptHandler', () => {
 
   it('should handle a simple wallet creation command', async () => {
     const response = await promptHandler.sendCommand(
-      'Create a new wallet on the regtest network using the standard test mnemonic'
+      'I need to generate a master node on the regtest network for mnemonic abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about.'
     );
-    
+
     expect(response).toBeDefined();
     expect(typeof response).toBe('string');
     console.log('AI Response:', response);

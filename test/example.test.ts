@@ -14,7 +14,7 @@ describe('OpenAI Chat Completion', () => {
 
   it('should successfully get a chat completion', async () => {
     const response = await openai.chat.completions.create({
-      model: 'gpt-4',
+      model: 'gpt-4o',
       messages: [
         { role: 'system', content: 'You are a helpful assistant.' },
         { role: 'user', content: 'How much is 2+2?' }
@@ -43,9 +43,10 @@ describe('OpenAI Chat Completion', () => {
   });
 
   it('test bitcoinjs', () => {
-    getMasterNodeFromMnemonic(
-      'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about',
-      'BITCOIN'
-    );
+    getMasterNodeFromMnemonic({
+      mnemonic:
+        'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about',
+      networkType: 'BITCOIN'
+    });
   });
 });
