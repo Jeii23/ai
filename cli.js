@@ -4,6 +4,9 @@ const { PromptHandler } = require('./dist/prompt');
 const readline = require('readline');
 require('dotenv').config();
 
+const args = process.argv.slice(2);
+const showDetails = args.includes('--details');
+
 if (!process.env.OPENAI_API_KEY) {
   console.error('Error: OPENAI_API_KEY environment variable is not set');
   process.exit(1);
@@ -16,27 +19,34 @@ const rl = readline.createInterface({
   output: process.stdout
 });
 
-console.log('Bitcoin Wallet Assistant CLI (type "exit" to quit)');
-console.log('------------------------------------------------');
+if (showDetails) {
+  console.log('Bitcoin Wallet Assistant CLI (type "exit" to quit)');
+  console.log('------------------------------------------------');
+  console.log('Run without --details for minimal output');
+}
 
 async function processCommand(command) {
   try {
     const response = await promptHandler.sendCommand(command);
-    console.log('\nResponse:', response.content);
+    if (showDetails) {
+      console.log('\nResponse:', response.content);
 
-    if (response.toolCalls.length > 0) {
-      console.log('\nTool Calls:');
-      response.toolCalls.forEach(({ name, args, result }) => {
-        console.log(`- ${name}:`);
-        console.log('  Arguments:', args);
-        console.log('  Result:', result);
+      if (response.toolCalls.length > 0) {
+        console.log('\nTool Calls:');
+        response.toolCalls.forEach(({ name, args, result }) => {
+          console.log(`- ${name}:`);
+          console.log('  Arguments:', args);
+          console.log('  Result:', result);
+        });
+      }
+
+      console.log('\nMetrics:', {
+        totalTokens: response.metrics.totalTokens,
+        estimatedCost: `$${response.metrics.estimatedCost.toFixed(4)}`
       });
+    } else {
+      console.log(response.content);
     }
-
-    console.log('\nMetrics:', {
-      totalTokens: response.metrics.totalTokens,
-      estimatedCost: `$${response.metrics.estimatedCost.toFixed(4)}`
-    });
   } catch (error) {
     console.error('Error:', error instanceof Error ? error.message : error);
   }
