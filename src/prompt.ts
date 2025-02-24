@@ -12,7 +12,8 @@ export class PromptHandler {
     this.messages = [
       {
         role: 'system',
-        content: 'You are a helpful assistant that understands Bitcoin wallet operations.'
+        content:
+          'You are a helpful assistant that understands Bitcoin wallet operations.'
       }
     ];
   }
