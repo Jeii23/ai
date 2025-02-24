@@ -16,12 +16,15 @@ type ToolFunction = (args: ToolArgs) => Promise<unknown> | unknown;
 const isToolFunction = (value: unknown): value is ToolFunction =>
   typeof value === 'function';
 
-// Find all tool implementations (they match schema names without 'Schema' suffix)
+// Create a type-safe way to check for schema and implementation existence
 const implementations = Object.fromEntries(
   Object.entries(allTools).filter(([key]) => {
     const schemaName = `${key}Schema`;
     return (
-      typeof allTools[schemaName] === 'object' && isToolFunction(allTools[key])
+      schemaName in allTools &&
+      key in allTools &&
+      typeof allTools[schemaName as keyof typeof allTools] === 'object' &&
+      isToolFunction(allTools[key as keyof typeof allTools])
     );
   })
 );
