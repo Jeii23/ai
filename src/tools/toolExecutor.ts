@@ -9,7 +9,8 @@ const schemas = Object.entries(allTools)
     function: schema
   }));
 
-type ToolFunction = (...args: any[]) => Promise<unknown> | unknown;
+type ToolArgs = Record<string, unknown>;
+type ToolFunction = (args: ToolArgs) => Promise<unknown> | unknown;
 
 // Type guard to check if a value is a tool function
 const isToolFunction = (value: unknown): value is ToolFunction =>
