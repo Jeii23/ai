@@ -5,7 +5,7 @@ import { mnemonicStore } from './getMasterNodeFromMnemonic';
 const { scriptExpressions } = descriptors;
 
 type DescriptorType = 'pkh' | 'wpkh' | 'sh-wpkh';
-type NetworkType = 'REGTEST' | 'TESTNET' | 'BITCOIN';
+import type { NetworkType } from '../types';
 
 interface DescriptorParams {
   fingerprint: string;
@@ -78,7 +78,7 @@ export const getDescriptorSchema = {
       },
       networkType: {
         type: 'string',
-        enum: ['REGTEST', 'TESTNET', 'BITCOIN'],
+        enum: ['REGTEST', 'TESTNET', 'BITCOIN', 'TAPE'],
         description: 'The Bitcoin network type'
       },
       account: {
