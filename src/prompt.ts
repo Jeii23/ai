@@ -38,7 +38,20 @@ This AI assistant uses BitcoinerLAB's open-source libraries and has deep knowled
 
   async sendCommand(
     command: string
-  ): Promise<{ content: string; metrics: CostMetrics }> {
+  ): Promise<{ 
+    content: string; 
+    metrics: CostMetrics;
+    toolCalls: Array<{
+      name: string;
+      args: Record<string, unknown>;
+      result: unknown;
+    }>;
+  }> {
+    const toolCalls: Array<{
+      name: string;
+      args: Record<string, unknown>;
+      result: unknown;
+    }> = [];
     this.messages.push({
       role: 'user',
       content: command
@@ -62,11 +75,13 @@ This AI assistant uses BitcoinerLAB's open-source libraries and has deep knowled
     while (response.tool_calls) {
       // Handle all tool calls in the current response
       for (const toolCall of response.tool_calls) {
-        console.log(
-          `Function Call: ${toolCall.function.name}`,
-          JSON.parse(toolCall.function.arguments)
-        );
-        const toolResult = await this.executeToolCall(toolCall);
+        const args = JSON.parse(toolCall.function.arguments);
+        const result = await this.executeToolCall(toolCall);
+        toolCalls.push({
+          name: toolCall.function.name,
+          args,
+          result
+        });
         this.messages.push({
           role: 'tool',
           tool_call_id: toolCall.id,
@@ -95,7 +110,8 @@ This AI assistant uses BitcoinerLAB's open-source libraries and has deep knowled
     // At this point, we have a final response without tool calls
     return {
       content: response.content ?? 'No response content',
-      metrics: this.costMetrics
+      metrics: this.costMetrics,
+      toolCalls
     };
   }
 
