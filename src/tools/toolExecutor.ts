@@ -20,7 +20,7 @@ const implementations = Object.fromEntries(
 export async function executeToolCall(toolCall: ChatCompletionMessageToolCall) {
   try {
     const implementation = implementations[toolCall.function.name];
-    
+
     if (!implementation) {
       throw new Error(`Unknown tool: ${toolCall.function.name}`);
     }
