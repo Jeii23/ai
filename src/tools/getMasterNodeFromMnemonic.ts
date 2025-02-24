@@ -1,7 +1,7 @@
 import * as secp256k1 from '@bitcoinerlab/secp256k1';
 import * as descriptors from '@bitcoinerlab/descriptors';
 import { mnemonicToSeedSync } from 'bip39';
-import { networks } from 'bitcoinjs-lib';
+import { getNetwork } from '../utils/networks';
 import type { BIP32Interface } from 'bip32';
 import type { NetworkType } from '../types';
 
@@ -20,12 +20,7 @@ export const getMasterNodeFromMnemonic = ({
   mnemonic: string;
   networkType: NetworkType;
 }) => {
-  const network = {
-    REGTEST: networks.regtest,
-    TESTNET: networks.testnet,
-    BITCOIN: networks.bitcoin,
-    TAPE: networks.regtest // TAPE network uses regtest configuration
-  }[networkType];
+  const network = getNetwork(networkType);
 
   const masterNode = BIP32.fromSeed(mnemonicToSeedSync(mnemonic), network);
   const fingerprint = masterNode.fingerprint.toString('hex');

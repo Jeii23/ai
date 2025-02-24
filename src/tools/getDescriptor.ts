@@ -1,5 +1,5 @@
 import * as descriptors from '@bitcoinerlab/descriptors';
-import { networks } from 'bitcoinjs-lib';
+import { getNetwork } from '../utils/networks';
 import { mnemonicStore } from './getMasterNodeFromMnemonic';
 
 const { scriptExpressions } = descriptors;
@@ -30,11 +30,7 @@ export const getDescriptor = ({
   }
 
   const { masterNode } = storedData;
-  const network = {
-    REGTEST: networks.regtest,
-    TESTNET: networks.testnet,
-    BITCOIN: networks.bitcoin
-  }[networkType];
+  const network = getNetwork(networkType);
 
   const descriptorFunctions = {
     pkh: scriptExpressions.pkhBIP32,
