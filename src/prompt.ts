@@ -36,7 +36,9 @@ export class PromptHandler {
 
     this.messages.push(response);
 
-    if (response.tool_calls) {
+    // Keep processing tool calls until AI provides a final response
+    while (response.tool_calls) {
+      // Handle all tool calls in the current response
       for (const toolCall of response.tool_calls) {
         const toolResult = await this.executeToolCall(toolCall);
         this.messages.push({
@@ -46,24 +48,24 @@ export class PromptHandler {
         });
       }
 
-      // Get AI's interpretation of the tool results
-      const finalResponse = await this.openai.chat.completions.create({
-        model: 'gpt-4o',
+      // Get next response from AI
+      const nextResponse = await this.openai.chat.completions.create({
+        model: 'gpt-4',
         messages: this.messages,
         tools,
-        store: true
+        tool_choice: 'auto'
       });
 
-      const finalMessage = finalResponse.choices[0]?.message;
-      if (!finalMessage) {
-        throw new Error('No final response received from AI');
+      response = nextResponse.choices[0]?.message;
+      if (!response) {
+        throw new Error('No response received from AI');
       }
 
-      this.messages.push(finalMessage);
-      return finalMessage.content ?? 'No response content';
+      this.messages.push(response);
     }
 
-    return response.content || 'No response content';
+    // At this point, we have a final response without tool calls
+    return response.content ?? 'No response content';
   }
 
   private async executeToolCall(
