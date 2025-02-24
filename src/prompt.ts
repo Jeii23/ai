@@ -52,9 +52,13 @@ export class PromptHandler {
         messages: this.messages
       });
 
-      const content = finalResponse.choices[0]?.message.content;
-      if (content) this.messages.push(finalResponse.choices[0].message);
-      return content || 'No response content';
+      const finalMessage = finalResponse.choices[0]?.message;
+      if (!finalMessage) {
+        throw new Error('No final response received from AI');
+      }
+      
+      this.messages.push(finalMessage);
+      return finalMessage.content ?? 'No response content';
     }
 
     return response.content || 'No response content';
@@ -63,12 +67,26 @@ export class PromptHandler {
   private async executeToolCall(
     toolCall: OpenAI.Chat.Completions.ChatCompletionMessageToolCall
   ) {
-    // Here we would implement the actual tool execution
-    // For now, just handle getMasterNodeFromMnemonic
-    if (toolCall.function.name === 'getMasterNodeFromMnemonic') {
-      const { mnemonic, networkType } = JSON.parse(toolCall.function.arguments);
-      return getMasterNodeFromMnemonic({ mnemonic, networkType });
+    try {
+      if (toolCall.function.name === 'getMasterNodeFromMnemonic') {
+        const args = JSON.parse(toolCall.function.arguments);
+        if (!args.mnemonic || !args.networkType) {
+          throw new Error('Missing required parameters: mnemonic or networkType');
+        }
+        if (!['REGTEST', 'TESTNET', 'BITCOIN'].includes(args.networkType)) {
+          throw new Error(`Invalid network type: ${args.networkType}`);
+        }
+        return getMasterNodeFromMnemonic({
+          mnemonic: args.mnemonic,
+          networkType: args.networkType as 'REGTEST' | 'TESTNET' | 'BITCOIN'
+        });
+      }
+      throw new Error(`Unknown tool: ${toolCall.function.name}`);
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(`Tool execution failed: ${error.message}`);
+      }
+      throw new Error('Tool execution failed with unknown error');
     }
-    throw new Error(`Unknown tool: ${toolCall.function.name}`);
   }
 }
