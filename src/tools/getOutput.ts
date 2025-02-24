@@ -29,13 +29,22 @@ export const getOutput = ({
   // Convert hex strings to Buffers for signersPubKeys if provided
   const pubKeyBuffers = signersPubKeys?.map(hex => Buffer.from(hex, 'hex'));
 
-  const output = new Output({
+  const outputParams: {
+    descriptor: string;
+    network: Network;
+    signersPubKeys?: Buffer[];
+    index?: number;
+    preimages?: Preimage[];
+  } = {
     descriptor,
-    network,
-    ...(pubKeyBuffers !== null && { signersPubKeys: pubKeyBuffers }),
-    ...(index !== null && { index }),
-    ...(preimages !== null && { preimages })
-  });
+    network
+  };
+
+  if (pubKeyBuffers !== null) outputParams.signersPubKeys = pubKeyBuffers;
+  if (index !== null) outputParams.index = index;
+  if (preimages !== null) outputParams.preimages = preimages;
+
+  const output = new Output(outputParams);
 
   // Get the address which will serve as the ID
   const address = output.getAddress();
