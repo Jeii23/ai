@@ -75,7 +75,7 @@ export const getOutputSchema = {
           description: 'Public key in hex format'
         },
         description:
-          'Array of public keys (in hex) that will be used for signing. Only needed for complex descriptors with multiple spending paths.'
+          'Array of public keys (in hex) that will be used for signing. Only needed for complex descriptors with multiple spending paths. Set this parameter to an array containing the public keys involved in the desired spending path. Leave it undefined if you only need to generate the scriptPubKey or address for a descriptor, or if all the public keys involved in the descriptor will sign the transaction. In the latter case, the satisfier will automatically choose the most optimal spending path (if more than one is available).'
       },
       index: {
         type: 'number',
@@ -89,16 +89,19 @@ export const getOutputSchema = {
           properties: {
             digest: {
               type: 'string',
-              description: 'The digest string (e.g., "sha256(cdabb7...)" or "ripemd160(095ff4...)")'
+              description:
+                'The digest string (e.g., "sha256(cdabb7...)" or "ripemd160(095ff4...)"). Accepted functions: sha256, hash256, ripemd160, hash160. Digests must be: 64-character HEX for sha256, hash160 or 30-character HEX for ripemd160 or hash160.'
             },
             preimage: {
               type: 'string',
-              description: 'Hex encoded preimage (32 bytes, 64 characters in hex)'
+              description:
+                'Hex encoded preimage (32 bytes, 64 characters in hex)'
             }
           },
           required: ['digest', 'preimage']
         },
-        description: 'Array of preimages if the miniscript-based descriptor uses them'
+        description:
+          'Array of preimages if the miniscript-based descriptor uses them'
       }
     },
     required: ['descriptor', 'networkType'],
