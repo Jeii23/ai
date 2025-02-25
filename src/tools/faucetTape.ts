@@ -2,10 +2,8 @@ export const faucetTape = async ({ address }: { address: string }) => {
   try {
     const response = await fetch('https://tape.rewindbitcoin.com/faucet', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ address })
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: `address=${encodeURIComponent(address)}`
     });
 
     if (!response.ok) {
