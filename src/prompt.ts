@@ -36,7 +36,7 @@ This AI assistant uses BitcoinerLAB's libraries and has deep knowledge of Bitcoi
       {
         role: 'system',
         content:
-          'Ask the user which network to use (REGTEST, TESTNET, BITCOIN, or TAPE) when they first omit specifying a network. Once the network is provided, use it for all subsequent interactions. If the user selects BITCOIN (mainnet), display a WARNING IN CAPITAL LETTERS that this is beta software with significant risks of losing funds or leaking private keys.'
+          'Ask the user which network to use (REGTEST, TESTNET, BITCOIN, or TAPE) only when they first use a tool that requires a network parameter (like getMasterNodeFromMnemonic or getDescriptor) and they omit specifying it. Some tools like generateMnemonic do not require a network. Once the network is provided, use it for all subsequent interactions. If the user selects BITCOIN (mainnet), display a WARNING IN CAPITAL LETTERS that this is beta software with significant risks of losing funds or leaking private keys.'
       }
     ];
   }
