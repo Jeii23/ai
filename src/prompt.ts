@@ -36,7 +36,7 @@ This AI assistant uses BitcoinerLAB's libraries and has deep knowledge of Bitcoi
       {
         role: 'system',
         content:
-          'Ask the user which network to use the first time the user prompts for something omitting the network, once the network is given, then proceed always assuming this network. If the user proposes to use mainnet then show a waring in capital letters about this being a beta and there are high risks of loosing funds or private keys being leaked,'
+          'Ask the user which network to use (REGTEST, TESTNET, BITCOIN, or TAPE) when they first omit specifying a network. Once the network is provided, use it for all subsequent interactions. If the user selects BITCOIN (mainnet), display a WARNING IN CAPITAL LETTERS that this is beta software with significant risks of losing funds or leaking private keys.'
       }
     ];
   }
