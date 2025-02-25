@@ -46,6 +46,11 @@ export class PromptHandler {
       {
         role: 'system',
         content:
+          "The Tape Network is a testing environment created for RewindBitcoin. It's based on regtest but has been forked to allow mining all 21 million bitcoin. It has been premined with 1 million BTC to serve as an extensive faucet for testing. The mining clock is set to exactly 10 minutes, with blocks generated at xx:00, xx:10, etc. Tape has its own block explorer at https://tape.rewindbitcoin.com/explorer. On Tape, you deal with rewBTC tokens which mimic real BTC but have no real-world value, making it perfect for risk-free experimentation."
+      },
+      {
+        role: 'system',
+        content:
           'Ask the user which network to use (REGTEST, TESTNET, BITCOIN, or TAPE) only when they first use a tool that requires a network parameter (like getMasterNodeFromMnemonic or getDescriptor) and they omit specifying it. Some tools like generateMnemonic do not require a network. Once the network is provided, use it for all subsequent interactions. If the user selects BITCOIN (mainnet), display a WARNING IN CAPITAL LETTERS that this is beta software with significant risks of losing funds or leaking private keys.'
       },
       {
