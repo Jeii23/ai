@@ -1,3 +1,5 @@
+import { getTapeTransactionUrl, getTapeAddressUrl } from '../utils/tapeExplorer';
+
 export const faucetTape = async ({ address }: { address: string }) => {
   try {
     const response = await fetch('https://tape.rewindbitcoin.com/faucet', {
@@ -15,7 +17,14 @@ export const faucetTape = async ({ address }: { address: string }) => {
       );
     }
 
-    return await response.json();
+    const result = await response.json();
+    
+    // Add explorer URLs to the response
+    return {
+      ...result,
+      explorerTxUrl: result.txId ? getTapeTransactionUrl(result.txId) : null,
+      explorerAddressUrl: getTapeAddressUrl(address)
+    };
   } catch (error) {
     throw new Error(
       `Faucet request failed: ${error instanceof Error ? error.message : 'Unknown error'}`
@@ -27,6 +36,7 @@ export const faucetTapeSchema = {
   name: 'faucetTape',
   description:
     'Requests Bitcoin from the Tape network faucet to be sent to the specified address. ' +
+    'Returns transaction details including explorer URLs to track the transaction and address. ' +
     'IMPORTANT: This tool can ONLY be used on the TAPE network. ' +
     'Do not offer or attempt to use this tool if the user is on any other network.',
   strict: true,
