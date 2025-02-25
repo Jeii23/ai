@@ -20,6 +20,7 @@ export const generateMnemonicSchema = {
         enum: [128, 160, 192, 224, 256]
       }
     },
-    additionalProperties: false
+    additionalProperties: false,
+    required: ['strength']
   }
 };
