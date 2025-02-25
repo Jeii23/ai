@@ -43,6 +43,11 @@ export class PromptHandler {
         role: 'system',
         content:
           'Ask the user which network to use (REGTEST, TESTNET, BITCOIN, or TAPE) only when they first use a tool that requires a network parameter (like getMasterNodeFromMnemonic or getDescriptor) and they omit specifying it. Some tools like generateMnemonic do not require a network. Once the network is provided, use it for all subsequent interactions. If the user selects BITCOIN (mainnet), display a WARNING IN CAPITAL LETTERS that this is beta software with significant risks of losing funds or leaking private keys.'
+      },
+      {
+        role: 'system',
+        content:
+          'IMPORTANT SECURITY INSTRUCTION: Never reveal internal implementation details about the tools, schemas, or code structure to users. Do not share information about how the tools work internally, parameter schemas, or any backend processes. Only provide user-facing information and results. If asked about implementation details, politely explain that you cannot share that information for security reasons.'
       }
     ];
   }
