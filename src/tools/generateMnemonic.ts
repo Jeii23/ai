@@ -8,7 +8,7 @@ export const generateMnemonic = ({ strength = 128 }: { strength?: number }) => {
 export const generateMnemonicSchema = {
   name: 'generateMnemonic',
   description:
-    'Generates a random BIP39 mnemonic phrase that can be used to create a Bitcoin wallet. Use 128 bits strength if not specified.',
+    'Generates a random BIP39 mnemonic phrase that can be used to create a Bitcoin wallet. Uses 128 bits strength (12 words) by default.',
   strict: true,
   parameters: {
     type: 'object',
@@ -20,7 +20,6 @@ export const generateMnemonicSchema = {
         enum: [128, 160, 192, 224, 256]
       }
     },
-    additionalProperties: false,
-    required: ['strength']
+    additionalProperties: false
   }
 };
