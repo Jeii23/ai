@@ -16,10 +16,11 @@ export const generateMnemonicSchema = {
       strength: {
         type: 'number',
         description:
-          'The strength of the mnemonic in bits (128, 160, 192, 224, or 256). Default is 128 bits (12 words).',
+          'The strength of the mnemonic in bits (128, 160, 192, 224, or 256). Automatically pick 128 bits (12 words) if not provided by the user.',
         enum: [128, 160, 192, 224, 256]
       }
     },
-    additionalProperties: false
+    additionalProperties: false,
+    required: ['strength']
   }
 };
