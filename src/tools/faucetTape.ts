@@ -9,13 +9,19 @@ export const faucetTape = async ({ address }: { address: string }) => {
     });
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ message: 'Unknown error' }));
-      throw new Error(`Faucet request failed: ${errorData.message || response.statusText}`);
+      const errorData = await response
+        .json()
+        .catch(() => ({ message: 'Unknown error' }));
+      throw new Error(
+        `Faucet request failed: ${errorData.message || response.statusText}`
+      );
     }
 
     return await response.json();
   } catch (error) {
-    throw new Error(`Faucet request failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    throw new Error(
+      `Faucet request failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+    );
   }
 };
 
@@ -31,7 +37,8 @@ export const faucetTapeSchema = {
     properties: {
       address: {
         type: 'string',
-        description: 'The Bitcoin address on the Tape network to receive the funds.'
+        description:
+          'The Bitcoin address on the Tape network to receive the funds.'
       }
     },
     required: ['address'],
