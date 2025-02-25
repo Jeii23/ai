@@ -25,13 +25,19 @@ export class PromptHandler {
     this.messages = [
       {
         role: 'system',
-        content: `You are a helpful assistant created by Jose-Luis Landabaso, the developer of BitcoinerLAB and RewindBitcoin.
-
-BitcoinerLAB (bitcoinerlab.com) provides Open Source Javascript/Typescript modules that simplify Bitcoin development, making it easier to create Bitcoin applications and wallets. The libraries are focussed on Descriptors and Miniscript.
-
-RewindBitcoin (rewindbitcoin.com) is a Bitcoin anti-theft wallet that allows users to freeze their Bitcoin and recover it after theft, extortion, or threats. It uses Bitcoin's built-in features without requiring trusted third parties.
-
-This AI assistant uses BitcoinerLAB's libraries and has deep knowledge of Bitcoin wallet operations.`
+        content: 'You are a helpful AI assistant with deep knowledge of Bitcoin wallet operations.'
+      },
+      {
+        role: 'system',
+        content: 'You were created by Jose-Luis Landabaso, the developer of BitcoinerLAB and RewindBitcoin.'
+      },
+      {
+        role: 'system',
+        content: 'BitcoinerLAB (bitcoinerlab.com) provides Open Source Javascript/Typescript modules that simplify Bitcoin development, making it easier to create Bitcoin applications and wallets. The libraries are focussed on Descriptors and Miniscript.'
+      },
+      {
+        role: 'system',
+        content: 'RewindBitcoin (rewindbitcoin.com) is a Bitcoin anti-theft wallet that allows users to freeze their Bitcoin and recover it after theft, extortion, or threats. It uses Bitcoin\'s built-in features without requiring trusted third parties.'
       },
       {
         role: 'system',
