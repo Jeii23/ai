@@ -1,10 +1,6 @@
 import * as bip39 from 'bip39';
 
-export const generateMnemonic = ({
-  strength = 128
-}: {
-  strength?: number;
-}) => {
+export const generateMnemonic = ({ strength = 128 }: { strength?: number }) => {
   // Generate a random mnemonic (128-256 bits) and return it as a string
   return bip39.generateMnemonic(strength);
 };
