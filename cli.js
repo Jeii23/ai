@@ -54,6 +54,9 @@ async function processCommand(command) {
 
 function prompt() {
   rl.question('\n\x1b[32m> ', async command => {
+    // Reset color after user input
+    process.stdout.write('\x1b[0m');
+    
     if (command.toLowerCase() === 'exit') {
       rl.close();
       return;
