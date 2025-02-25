@@ -27,9 +27,6 @@ if (showDetails) {
 
 async function processCommand(command) {
   try {
-    // Echo the command in green
-    console.log(`\x1b[32m${command}\x1b[0m`);
-    
     const response = await promptHandler.sendCommand(command);
     if (showDetails) {
       console.log('\nResponse:', response.content);
