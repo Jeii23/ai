@@ -31,7 +31,7 @@ export const createWallet = async ({
 }) => {
   let usedFingerprint: string;
   let generatedMnemonic: string | undefined;
-  
+
   // Use existing fingerprint, existing mnemonic, or generate new mnemonic
   if (fingerprint) {
     // Verify fingerprint exists
@@ -67,7 +67,7 @@ export const createWallet = async ({
       change: 0,
       index: '*'
     });
-    
+
     descriptors.push(externalDescriptor);
 
     // Change addresses (m/purpose'/coin'/account'/1/*)
@@ -79,13 +79,13 @@ export const createWallet = async ({
       change: 1,
       index: '*'
     });
-    
+
     descriptors.push(changeDescriptor);
   }
 
   // Assign a unique ID to the wallet
   const walletId = nextWalletId++;
-  
+
   // Store wallet
   const wallet = {
     id: walletId,
@@ -93,7 +93,7 @@ export const createWallet = async ({
     networkType,
     descriptors
   };
-  
+
   walletStore.set(walletId, wallet);
 
   return {
@@ -129,7 +129,8 @@ export const createWalletSchema = {
       networkType: {
         type: 'string',
         enum: ['REGTEST', 'TESTNET', 'BITCOIN', 'TAPE'],
-        description: 'The Bitcoin network type for all descriptors in this wallet'
+        description:
+          'The Bitcoin network type for all descriptors in this wallet'
       },
       descriptorTypes: {
         type: 'array',

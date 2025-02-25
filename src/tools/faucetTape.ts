@@ -1,4 +1,7 @@
-import { getTapeTransactionUrl, getTapeAddressUrl } from '../utils/tapeExplorer';
+import {
+  getTapeTransactionUrl,
+  getTapeAddressUrl
+} from '../utils/tapeExplorer';
 
 export const faucetTape = async ({ address }: { address: string }) => {
   try {
@@ -18,7 +21,7 @@ export const faucetTape = async ({ address }: { address: string }) => {
     }
 
     const result = await response.json();
-    
+
     // Add explorer URLs to the response
     return {
       ...result,
