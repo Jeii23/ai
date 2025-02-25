@@ -53,7 +53,7 @@ async function processCommand(command) {
 }
 
 function prompt() {
-  rl.question('\n> ', async command => {
+  rl.question('\n\x1b[32m> \x1b[0m', async command => {
     if (command.toLowerCase() === 'exit') {
       rl.close();
       return;
