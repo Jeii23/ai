@@ -22,15 +22,16 @@ export const createWallet = async ({
   fingerprint,
   mnemonic,
   networkType,
-  descriptorTypes = ['wpkh', 'pkh', 'sh-wpkh']
+  descriptorTypes = null
 }: {
-  fingerprint?: string;
-  mnemonic?: string;
+  fingerprint: string | null;
+  mnemonic: string | null;
   networkType: NetworkType;
-  descriptorTypes?: Array<'wpkh' | 'pkh' | 'sh-wpkh'>;
+  descriptorTypes: Array<'wpkh' | 'pkh' | 'sh-wpkh'> | null;
 }) => {
   let usedFingerprint: string;
   let generatedMnemonic: string | undefined;
+  if (!descriptorTypes) descriptorTypes = ['wpkh', 'pkh', 'sh-wpkh'];
 
   // Use existing fingerprint, existing mnemonic, or generate new mnemonic
   if (fingerprint) {
@@ -117,14 +118,14 @@ export const createWalletSchema = {
     type: 'object',
     properties: {
       fingerprint: {
-        type: 'string',
+        type: ['string', 'null'],
         description:
-          'Optional fingerprint of an existing master node. If provided, uses this master node instead of creating a new one.'
+          'Optional fingerprint of an existing master node. If provided, uses this master node instead of creating a new one. If not provided then pass null.'
       },
       mnemonic: {
-        type: 'string',
+        type: ['string', 'null'],
         description:
-          'Optional BIP39 mnemonic phrase. If not provided and no fingerprint is given, a new random mnemonic will be generated.'
+          'Optional BIP39 mnemonic phrase. If not provided and no fingerprint is given, a new random mnemonic will be generated. If not provided then pass null.'
       },
       networkType: {
         type: 'string',
@@ -139,10 +140,10 @@ export const createWalletSchema = {
           enum: ['wpkh', 'pkh', 'sh-wpkh']
         },
         description:
-          'Optional array of descriptor types to include. Defaults to all three types: wpkh (native segwit), pkh (legacy), and sh-wpkh (wrapped segwit)'
+          'Optional array of descriptor types to include. Defaults to all three types: wpkh (native segwit), pkh (legacy), and sh-wpkh (wrapped segwit). If not provided pass null.'
       }
     },
-    required: ['networkType'],
+    required: ['networkType', 'fingerprint', 'mnemonic', 'descriptorTypes'],
     additionalProperties: false
   }
 };
