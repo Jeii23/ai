@@ -1,3 +1,11 @@
 {
-  "extends": "./node_modules/@bitcoinerlab/configs/tsconfig.json"
+  "extends": "./node_modules/@bitcoinerlab/configs/tsconfig.json",
+    "compilerOptions": {
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "target": "ES2020",
+    "module": "ESNext"
+  }
 }
+

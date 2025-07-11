@@ -45,7 +45,7 @@ describe('Tools with OpenAI validation', () => {
     ];
 
     const completion = await openai.chat.completions.create({
-      model: 'gpt-4o',
+      model: 'gpt-4.1',
       messages,
       tools,
       store: true
@@ -83,7 +83,7 @@ describe('Tools with OpenAI validation', () => {
       console.log('Provide Result to AI:', messages);
       // Send the result back to OpenAI
       const finalResponse = await openai.chat.completions.create({
-        model: 'gpt-4o',
+        model: 'gpt-4.1',
         messages,
         tools,
         store: true

@@ -82,7 +82,7 @@ export class PromptHandler {
 
     const completion = await this.trackCost(
       this.openai.chat.completions.create({
-        model: 'gpt-4o',
+        model: 'gpt-4.1',
         messages: this.messages,
         tools,
         store: true
@@ -115,7 +115,7 @@ export class PromptHandler {
       // Get next response from AI
       const nextResponse = await this.trackCost(
         this.openai.chat.completions.create({
-          model: 'gpt-4o',
+          model: 'gpt-4.1',
           messages: this.messages,
           tools,
           store: true
@@ -149,10 +149,10 @@ export class PromptHandler {
       this.costMetrics.completionTokens += response.usage.completion_tokens;
       this.costMetrics.totalTokens += response.usage.total_tokens;
 
-      // GPT-4o costs: $0.0025/1K prompt tokens, $0.01/1K completion tokens
+      // GPT-4.1 costs: $0.0025/1K prompt tokens, $0.01/1K completion tokens
       this.costMetrics.estimatedCost +=
-        (response.usage.prompt_tokens * 0.0025) / 1000 +
-        (response.usage.completion_tokens * 0.01) / 1000;
+        (response.usage.prompt_tokens * 0.002) / 1000 +
+        (response.usage.completion_tokens * 0.008) / 1000;
     }
     return response;
   }

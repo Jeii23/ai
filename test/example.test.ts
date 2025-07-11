@@ -14,7 +14,7 @@ describe('OpenAI Chat Completion', () => {
 
   it('should successfully get a chat completion', async () => {
     const response = await openai.chat.completions.create({
-      model: 'gpt-4o',
+      model: 'gpt-4.1',
       messages: [
         { role: 'system', content: 'You are a helpful assistant.' },
         { role: 'user', content: 'How much is 2+2?' }
