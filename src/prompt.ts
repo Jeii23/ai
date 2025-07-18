@@ -97,20 +97,40 @@ export class PromptHandler {
     // Keep processing tool calls until AI provides a final response
     while (response.tool_calls) {
       // Handle all tool calls in the current response
+      // Handle all tool calls in the current response
       for (const toolCall of response.tool_calls) {
         const args = JSON.parse(toolCall.function.arguments);
-        const result = await this.executeToolCall(toolCall);
-        toolCalls.push({
-          name: toolCall.function.name,
-          args,
-          result
-        });
-        this.messages.push({
-          role: 'tool',
-          tool_call_id: toolCall.id,
-          content: JSON.stringify(result)
-        });
+
+        try {
+          // ▶️ 1. Executar l’eina
+          const result = await this.executeToolCall(toolCall);
+
+          // ▶️ 2. Desar mètriques i resposta
+          toolCalls.push({
+            name: toolCall.function.name,
+            args,
+            result
+          });
+
+          // ▶️ 3. Enviar el missatge 'tool' amb l'èxit
+          this.messages.push({
+            role: 'tool',
+            tool_call_id: toolCall.id,
+            content: JSON.stringify(result)
+          });
+        } catch (e) {
+          // ⚠️ Si qualsevol cosa peta (esquema invàlid, fons insuficients...)
+          const errObj = { error: e instanceof Error ? e.message : String(e) };
+
+          // ▶️ 4. Enviar igualment el missatge 'tool' amb l'error
+          this.messages.push({
+            role: 'tool',
+            tool_call_id: toolCall.id,
+            content: JSON.stringify(errObj)
+          });
+        }
       }
+
 
       // Get next response from AI
       const nextResponse = await this.trackCost(

@@ -194,7 +194,7 @@ export const createUnsignedTxSchema = {
   description:
     'Creates a PSBT without signature: inputs walletId, toAddress, amountSats, feeRate (opcional). ' +
     'returns {psbtBase64, fee, vsize}.',
-  strict: true,
+  strict: false,
   parameters: {
     type: 'object',
     properties: {
@@ -202,9 +202,8 @@ export const createUnsignedTxSchema = {
       toAddress: { type: 'string' },
       amountSats: { type: 'number' },
       feeRate: {
-        type: 'number',
-        description: 'Tarifa en sats/vB (default 5)',
-        nullable: true
+        type: ['number', 'null'],      // ← permet null
+        description: 'Tarifa en sats/vB (null = 5)'
       }
     },
     required: ['walletId', 'toAddress', 'amountSats'],
